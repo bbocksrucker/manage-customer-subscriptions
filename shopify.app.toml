@@ -1,0 +1,35 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "5890363ae30a4a3a434fe5df1c4319e3"
+application_url = "https://managecustomersubscriptions-muddy-field-2563.fly.dev"
+embedded = true
+name = "manage_customer_subscriptions"
+handle = "manage_customer_subscriptions"
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "afreshed-dev-store.myshopify.com"
+include_config_on_deploy = true
+
+[webhooks]
+api_version = "2024-10"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/scopes_update" ]
+  uri = "https://managecustomersubscriptions-muddy-field-2563.fly.dev/webhooks/app/scopes_update"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/uninstalled" ]
+  uri = "https://managecustomersubscriptions-muddy-field-2563.fly.dev/webhooks/app/uninstalled"
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "read_draft_orders,read_orders,read_products,write_customers,write_draft_orders,write_metaobjects,write_orders,write_products"
+
+[auth]
+redirect_urls = [
+  "https://managecustomersubscriptions-muddy-field-2563.fly.dev/auth/callback"
+]
+
+[pos]
+embedded = false

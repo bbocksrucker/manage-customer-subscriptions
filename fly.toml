@@ -1,0 +1,38 @@
+# fly.toml app configuration file generated for managecustomersubscriptions-muddy-field-2563 on 2025-02-04T01:27:03+01:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'managecustomersubscriptions-muddy-field-2563'
+primary_region = 'fra'
+
+[build]
+
+[env]
+  PORT = '3000'
+  SCOPES = 'read_draft_orders,read_orders,read_products,write_customers,write_draft_orders,write_metaobjects,write_orders,write_products'
+  SHOPIFY_API_KEY = '5890363ae30a4a3a434fe5df1c4319e3'
+  SHOPIFY_APP_URL = 'https://managecustomersubscriptions-muddy-field-2563.fly.dev'
+
+[processes]
+  app = 'node ./dbsetup.js npm run docker-start'
+
+[[mounts]]
+  source = 'data'
+  destination = '/data'
+  auto_extend_size_threshold = 80
+  auto_extend_size_increment = '1GB'
+  auto_extend_size_limit = '10GB'
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
