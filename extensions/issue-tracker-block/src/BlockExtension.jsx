@@ -131,6 +131,7 @@ function App() {
       const response = await fetch(
         `https://ytgrqowmsrgrcjrpzgum.supabase.co/functions/v1/fetch_collection?collectionIds=${collectionIdQuery}`,
         {
+          method: "GET",
           headers: {
             "Content-Type": "application/json",
             "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl0Z3Jxb3dtc3JncmNqcnB6Z3VtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM5NTM1NjcsImV4cCI6MjA0OTUyOTU2N30.NyKaM5WkV_hWH3ORT49lvv3yvgIQfuzecrQugJgN5fg",  // 👈 Supabase ANON-KEY
@@ -277,7 +278,7 @@ function App() {
       fetchContractData();
       setLoading(false);
     }
-  };  
+  };
 
   return (
     <AdminBlock title="Abonnement Details">
