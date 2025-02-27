@@ -1,31 +1,36 @@
-app = "managecustomersubscriptions-muddy-field-2563"
-primary_region = "fra"
+# fly.toml app configuration file generated for managecustomersubscriptions-lingering-moon-9777 on 2025-02-27T01:21:52+01:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'managecustomersubscriptions-lingering-moon-9777'
+primary_region = 'fra'
 
 [build]
-  dockerfile = "Dockerfile"
+  dockerfile = 'Dockerfile'
 
 [env]
-  PORT = "3000"
-  SCOPES = "read_draft_orders,read_orders,read_products,write_customers,write_draft_orders,write_metaobjects,write_orders,write_products"
-  SHOPIFY_APP_URL = "https://managecustomersubscriptions-muddy-field-2563.fly.dev"
-  DATABASE_URL = "file:/data/prod.db"
+  DATABASE_URL = 'file:/data/prod.db'
+  PORT = '3000'
+  SCOPES = 'read_draft_orders,read_orders,read_products,write_customers,write_draft_orders,write_metaobjects,write_orders,write_products'
+  SHOPIFY_APP_URL = 'https://managecustomersubscriptions-muddy-field-2563.fly.dev'
 
 [[mounts]]
-  source = "data"
-  destination = "/data"
+  source = 'data'
+  destination = '/data'
   auto_extend_size_threshold = 80
-  auto_extend_size_increment = "1GB"
-  auto_extend_size_limit = "10GB"
+  auto_extend_size_increment = '1GB'
+  auto_extend_size_limit = '10GB'
 
 [http_service]
   internal_port = 3000
   force_https = true
-  auto_stop_machines = true
+  auto_stop_machines = 'stop'
   auto_start_machines = true
   min_machines_running = 0
-  processes = ["app"]
+  processes = ['app']
 
 [[vm]]
-  memory = "1gb"
-  cpu_kind = "shared"
+  memory = '1gb'
+  cpu_kind = 'shared'
   cpus = 1

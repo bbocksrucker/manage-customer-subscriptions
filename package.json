@@ -34,12 +34,14 @@
     "@shopify/polaris": "^12.27.0",
     "@shopify/shopify-app-remix": "^3.4.0",
     "@shopify/shopify-app-session-storage-prisma": "^5.1.5",
+    "@supabase/supabase-js": "^2.49.1",
     "date-fns": "^4.1.0",
     "isbot": "^5.1.0",
     "prisma": "^5.11.0",
     "react": "^18.2.0",
     "react-datepicker": "^7.5.0",
     "react-dom": "^18.2.0",
+    "recharts": "^2.15.1",
     "vite-tsconfig-paths": "^5.0.1"
   },
   "devDependencies": {

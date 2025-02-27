@@ -1,9 +1,9 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "5890363ae30a4a3a434fe5df1c4319e3"
-application_url = "https://protection-bid-slim-qualified.trycloudflare.com"
+application_url = "https://managecustomersubscriptions-lingering-moon-9777.fly.dev"
 embedded = true
-name = "manage_customer_subscriptions"
+name = "Contract-Management-V2"
 handle = "manage_customer_subscriptions"
 
 [build]
@@ -16,11 +16,11 @@ api_version = "2024-10"
 
   [[webhooks.subscriptions]]
   topics = [ "app/scopes_update" ]
-  uri = "https://managecustomersubscriptions-muddy-field-2563.fly.dev/webhooks/app/scopes_update"
+  uri = "https://ship-optimal-locale-stylus.trycloudflare.com/webhooks/app/scopes_update"
 
   [[webhooks.subscriptions]]
   topics = [ "app/uninstalled" ]
-  uri = "https://managecustomersubscriptions-muddy-field-2563.fly.dev/webhooks/app/uninstalled"
+  uri = "https://ship-optimal-locale-stylus.trycloudflare.com/webhooks/app/uninstalled"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
@@ -28,9 +28,9 @@ scopes = "read_draft_orders,read_orders,read_products,write_customers,write_draf
 
 [auth]
 redirect_urls = [
-  "https://protection-bid-slim-qualified.trycloudflare.com/auth/callback",
-  "https://protection-bid-slim-qualified.trycloudflare.com/auth/shopify/callback",
-  "https://protection-bid-slim-qualified.trycloudflare.com/api/auth/callback"
+  "https://stuff-although-referrals-successful.trycloudflare.com/auth/callback",
+  "https://stuff-although-referrals-successful.trycloudflare.com/auth/shopify/callback",
+  "https://stuff-although-referrals-successful.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]

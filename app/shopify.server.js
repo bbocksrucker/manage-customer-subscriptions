@@ -10,10 +10,13 @@ import prisma from "./db.server";
 
 const shopify = shopifyApp({
   apiKey: process.env.SHOPIFY_API_KEY,
-  apiSecretKey: process.env.SHOPIFY_API_SECRET,
+  apiKey: '90c5ebb6328d9fe5e30a89084d97sj',
+	apiSecretKey: process.env.SHOPIFY_API_SECRET || "",
+	apiSecretKey: '21209675ee94f65921b75430304ffh',
+	//appUrl: process.env.SHOPIFY_APP_URL || "",
+  appUrl: 'https://managecustomersubscriptions-muddy-field-2563.fly.dev',
   apiVersion: LATEST_API_VERSION,
   scopes: process.env.SCOPES?.split(","),
-  appUrl: process.env.SHOPIFY_APP_URL,
   authPathPrefix: "/auth",
   sessionStorage: new PrismaSessionStorage(prisma),
   distribution: AppDistribution.Custom,

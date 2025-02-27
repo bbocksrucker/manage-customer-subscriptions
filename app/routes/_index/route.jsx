@@ -1,16 +1,46 @@
-import { redirect } from "@remix-run/node";
+
 import { Form, useLoaderData } from "@remix-run/react";
-import { login } from "../../shopify.server";
 import styles from "./styles.module.css";
+import { redirect } from "@remix-run/node";
+import { authenticate } from "../../shopify.server";
+
 
 export const loader = async ({ request }) => {
-  const url = new URL(request.url);
+  try {
+    const url = new URL(request.url);
+    const isEmbedded = url.searchParams.get("embedded") === "1";
 
-  if (url.searchParams.get("shop")) {
-    throw redirect(`/app?${url.searchParams.toString()}`);
+    const auth = await authenticate.admin(request);
+
+    console.log("DEBUG AUTH:", auth);
+
+    if (!auth || !auth.admin) {
+      console.log("❌ Nutzer nicht eingeloggt, leite zu /auth weiter");
+
+      // Falls wir in einem iFrame sind, nutze Exit-Redirect
+      if (isEmbedded) {
+        return redirect(
+          `/auth/exit-iframe?shop=afreshed-dev-store.myshopify.com`
+        );
+      }
+
+      // Falls nicht im iFrame, zur normalen Auth-Seite leiten
+      return redirect("/auth");
+    }
+
+    if (url.pathname === "/dashboard") {
+      return null;
+    }
+
+    console.log("✅ Nutzer eingeloggt, weiterleiten zu /dashboard");
+    return redirect("/dashboard");
+  } catch (error) {
+    console.error("❌ Fehler in der Authentifizierung:", error);
+    // alert("Fehler in der Authentifizierung, bitte erneut versuchen.");
+    return redirect("/dashboard");
+    return redirect("/auth");
+
   }
-
-  return { showForm: Boolean(login) };
 };
 
 export default function App() {

@@ -31,6 +31,9 @@ function App() {
   const totalPages = 4;
   const [valueondropdown, setValueOnDropdown] = useState("");
   const [valueondropdownCutout, setValueOnDropdownCutout] = useState("");
+  const [contracts, setContracts] = useState([]);
+  const [selectedContractId, setSelectedContractId] = useState("");
+
 
 
   useEffect(() => {
@@ -69,49 +72,40 @@ function App() {
       setLoading(false);
       return;
     }
-
+  
     const rawCustomerId = data.selected[0]?.id;
-    if (!rawCustomerId) {
-      setLoading(false);
-      return;
-    }
     const customerId = extractCustomerId(rawCustomerId);
-
+  
     if (!customerId) {
       console.error("Ungültige Customer ID:", rawCustomerId);
       setLoading(false);
       return;
     }
-
+  
     try {
       const response = await fetch(
         `https://ytgrqowmsrgrcjrpzgum.supabase.co/functions/v1/get_contracts`,
         {
-          method: "POST", // 🚨 WICHTIG: Die Function erwartet eine POST-Anfrage
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
             "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl0Z3Jxb3dtc3JncmNqcnB6Z3VtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM5NTM1NjcsImV4cCI6MjA0OTUyOTU2N30.NyKaM5WkV_hWH3ORT49lvv3yvgIQfuzecrQugJgN5fg",  // 👈 Supabase ANON-KEY
             "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl0Z3Jxb3dtc3JncmNqcnB6Z3VtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzM5NTM1NjcsImV4cCI6MjA0OTUyOTU2N30.NyKaM5WkV_hWH3ORT49lvv3yvgIQfuzecrQugJgN5fg"
           },
-          body: JSON.stringify({ customer_id: customerId }), // JSON-Body mit Customer ID
+          body: JSON.stringify({ customer_id: customerId }),
         }
       );
-    
+  
       const contractData = await response.json();
-    
+  
       if (contractData.success && contractData.data.length > 0) {
-        const contract = contractData.data[0];
-        setContractData(contract);
-        setStatus(contract.status || "");
-        setInterval(contract.interval || "");
-        setPauseStart(contract.pause_start || "");
-        setPauseEnd(contract.pause_end || "");
-        setCollections(ensureArray(contract.collection_id));
-        setCutouts(ensureArray(contract.cut_outs));
-        setSelected({
-          start: contract.pause_start ? new Date(contract.pause_start) : null,
-          end: contract.pause_end ? new Date(contract.pause_end) : null,
-        });
+        setContracts(contractData.data); // Setzt alle Contracts
+        
+        // Falls noch kein Contract ausgewählt ist, wähle den ersten als Default
+        if (!selectedContractId) {
+          setSelectedContractId(contractData.data[0].id);
+          updateContractData(contractData.data[0]);
+        }
       }
     } catch (error) {
       console.error("Error fetching contract data:", error);
@@ -119,6 +113,20 @@ function App() {
       setLoading(false);
     }
   }
+
+  function updateContractData(contract) {
+    setContractData(contract);
+    setStatus(contract.status || "");
+    setInterval(contract.interval || "");
+    setPauseStart(contract.pause_start || "");
+    setPauseEnd(contract.pause_end || "");
+    setCollections(ensureArray(contract.collection_id));
+    setCutouts(ensureArray(contract.cut_outs));
+    setSelected({
+      start: contract.pause_start ? new Date(contract.pause_start) : null,
+      end: contract.pause_end ? new Date(contract.pause_end) : null,
+    });
+  }  
 
   async function fetchCollectionData() {
     if (collections.length === 0) {
@@ -228,24 +236,21 @@ function App() {
   console.log("Cutouts:", cutouts);
 
   const saveChanges = async () => {
-    const rawCustomerId = data.selected[0]?.id;
-    if (!rawCustomerId) {
-      console.error("Customer ID fehlt.");
-      setLoading(false);
+    if (!selectedContractId) {
+      alert("Bitte zuerst ein Abo auswählen.");
       return;
     }
   
-    const customerId = extractCustomerId(rawCustomerId);
     setLoading(true);
   
     const payload = {
-      customer_id: customerId,
-      interval: interval,
+      contract_id: selectedContractId, // 🔥 neu hinzugefügt!
+      interval,
       status,
       pause_start: pauseStart || null,
       pause_end: pauseEnd || null,
-      collection_ids: ensureArray(collections), // Statt product_ids
-      cut_outs: ensureArray(cutouts), // Hinzugefügt für Ausschlüsse
+      collection_ids: ensureArray(collections),
+      cut_outs: ensureArray(cutouts),
     };
   
     console.log("Payload zum Speichern:", payload);
@@ -279,26 +284,39 @@ function App() {
       setLoading(false);
     }
   };
+  
+
+  const selectedContract = contracts.find((c) => c.id === selectedContractId) || {};
 
   return (
     <AdminBlock title="Abonnement Details">
+        <Select
+        label="Abo auswählen"
+        options={contracts.map(c => ({ label: `Abo #${c.id}`, value: c.id }))}
+        value={selectedContractId}
+        onChange={(value) => {
+          setSelectedContractId(value);
+          const selected = contracts.find(c => c.id === value);
+          if (selected) updateContractData(selected);
+        }}
+        />
       {currentPage === 1 && (
         <BlockStack spacing="tight">
           <Text>
             <Text emphasis="strong">Status:</Text> {status || "N/A"}
           </Text>
           <Text>
-            <Text emphasis="strong">Aktivierung:</Text> {contractData.activation_date || "N/A"}
+            <Text emphasis="strong">Aktivierung:</Text> {selectedContract.activation_date || "N/A"}
           </Text>
           <Text>
-            <Text emphasis="strong">Letzte Lieferung:</Text> {contractData.last_delivery_date || "N/A"}
+            <Text emphasis="strong">Letzte Lieferung:</Text> {selectedContract.last_delivery_date || "N/A"}
           </Text>
           <Text>
             <Text emphasis="strong">Nächste Lieferung:</Text>{" "}
-            {contractData.planned_next_delivery_date || "N/A"}
+            {selectedContract.planned_next_delivery_date || "N/A"}
           </Text>
           <Text>
-            <Text emphasis="strong">Kündigungsdatum:</Text> {contractData.cancelation_date || "N/A"}
+            <Text emphasis="strong">Kündigungsdatum:</Text> {selectedContract.cancelation_date || "N/A"}
           </Text>
         </BlockStack>
       )}
